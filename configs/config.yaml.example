@@ -1,8 +1,10 @@
-log_level: debug
-api:
-  port: "5009"
-  allowed_origins: []
-database:
-  user: gw
-  password: fananas
+log_level: debug # Log level to be used
+api:  # API configurations
+  port: "5009"  # Standard port
+  allowed_origins: [] # Cors origins when making frontend -> backend calls
+database: # Database configurations
   db: gateway
+  host: localhost
+  password: fananas
+  port: "5432"
+  user: gw

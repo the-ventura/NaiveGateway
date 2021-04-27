@@ -2,6 +2,7 @@ package database
 
 import (
 	"context"
+	"fmt"
 
 	pg "github.com/go-pg/pg/v10"
 )
@@ -24,6 +25,7 @@ func (d dbLogger) AfterQuery(c context.Context, q *pg.QueryEvent) error {
 // NewConnection creates a new database connection
 func NewConnection() *pg.DB {
 	db := pg.Connect(&pg.Options{
+		Addr:     fmt.Sprintf("%s:%s", cfg.Database.Host, cfg.Database.Port),
 		User:     cfg.Database.User,
 		Password: cfg.Database.Password,
 		Database: cfg.Database.DB,

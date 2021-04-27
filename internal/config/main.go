@@ -27,20 +27,22 @@ type APIConfig struct {
 type DatabaseConfig struct {
 	User     string `yaml:"user" env:"GATEWAY_DB_USER"`
 	Password string `yaml:"password" env:"GATEWAY_DB_PASSWORD"`
+	Host     string `yaml:"host" env:"GATEWAY_DB_HOST" env-default:"localhost"`
+	Port     string `yaml:"port" env:"GATEWAY_DB_PORT" env-default:"5432"`
 	DB       string `yaml:"db" env:"GATEWAY_DB_DB_NAME" env-default:"gateway"`
 }
 
-// PicoConfig represents the configuration for ganesh
-type PicoConfig struct {
+// GWConfig represents the configuration for ganesh
+type GWConfig struct {
 	LogLevel string         `yaml:"log_level" env:"GATEWAY_LOG_LEVEL" env-default:"info"`
 	API      APIConfig      `yaml:"api"`
 	Database DatabaseConfig `yaml:"database"`
 }
 
 // GetConfig retrieves the configuration for the project
-func GetConfig() PicoConfig {
-	var config PicoConfig
-	configPath := os.Getenv("PICO_CONFIG_PATH")
+func GetConfig() GWConfig {
+	var config GWConfig
+	configPath := os.Getenv("GATEWAY_CONFIG_PATH")
 	if configPath == "" {
 		configPath = "configs/config.yaml"
 	}
