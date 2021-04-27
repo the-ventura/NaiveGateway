@@ -1,0 +1,15 @@
+version: "3.9"
+services:
+  database:
+    image: postgres:13.1-alpine
+    user: postgres
+    ports:
+      - "5432:5432"
+    command: ["postgres", "-c", "log_statement=all"] # Only for development, if you were using this on production disable the verbose logging
+    environment:
+      POSTGRES_USER: gw
+      POSTGRES_PASSWORD: fananas
+      POSTGRES_DB: gateway
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock # Only used in development if you want to access the container using localhost
+      - ~/naivegateway/:/var/lib/postgresql/data # You probably want to change this to point to a specific path in your machine
