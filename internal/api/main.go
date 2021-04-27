@@ -3,9 +3,11 @@ package api
 import (
 	"fmt"
 	"naivegateway/internal/config"
+	"naivegateway/internal/database"
 	"naivegateway/internal/logger"
 	"net/http"
 
+	"github.com/go-pg/pg/v10"
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 	"github.com/spf13/cobra"
@@ -29,11 +31,14 @@ func NewCommand() *cobra.Command {
 
 // API is a struct that holds together the api dependencies
 type API struct {
+	db *pg.DB
 }
 
 // New creates a new api object
 func New() API {
-	return API{}
+	return API{
+		db: database.NewConnection(),
+	}
 }
 
 func loggingMiddleware(next http.Handler) http.Handler {
@@ -51,13 +56,15 @@ func (api *API) start() {
 	originsOk := handlers.AllowedOrigins(cfg.API.CorsOrigins)
 	methodsOk := handlers.AllowedMethods([]string{"GET", "HEAD", "POST", "PUT", "OPTIONS"})
 
+	// Generic routes
 	r.HandleFunc("/health", api.health)
+	// Account routes
+	r.HandleFunc("/v1/accounts/create", api.createAccount).Methods("GET")
+	r.HandleFunc("/v1/accounts/deposit", api.depositToAccount).Methods("POST")
+	r.HandleFunc("/v1/accounts/detail", api.accountDetails).Methods("POST")
+	r.HandleFunc("/v1/accounts/statement", api.health)
+
 	r.Use(loggingMiddleware)
 	log.Infof("API server listening on port %s", cfg.API.Port)
 	http.ListenAndServe(connectionString, handlers.CORS(originsOk, headersOk, methodsOk)(r))
-}
-
-func (api *API) health(w http.ResponseWriter, req *http.Request) {
-	w.WriteHeader(http.StatusOK)
-	w.Write([]byte("OK"))
 }

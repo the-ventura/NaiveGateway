@@ -1,2 +1,2 @@
 build:
-	go build -o naivegateway cmd/main.go
+	go build -o bin/naivegateway cmd/main.go
