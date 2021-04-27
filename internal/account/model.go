@@ -7,11 +7,12 @@ import (
 	"time"
 
 	"github.com/go-pg/pg/v10"
+	"github.com/google/uuid"
 )
 
 type Account struct {
 	ID               int64     `json:"id"`
-	UUID             string    `json:"uuid"`
+	UUID             string    `json:"uuid" pg:",pk"`
 	Available        float64   `json:"available"`
 	Blocked          float64   `json:"blocked"`
 	Deposited        float64   `json:"deposited"`
@@ -31,7 +32,7 @@ type Account struct {
 func New() Account {
 	var identifier = rand.Intn(4666778181156223-4666000000000000) + 4666000000000000
 	return Account{
-		UUID:             fmt.Sprintf("%v", identifier),
+		UUID:             uuid.New().String(),
 		Available:        0,
 		Blocked:          0,
 		Deposited:        0,
@@ -59,12 +60,16 @@ func (a *Account) Create(db *pg.DB) error {
 	return err
 }
 
+func (a *Account) UpdateAvailableFunds() {
+	a.Available = a.Deposited - a.Withdrawn - a.Blocked
+}
+
 func (a *Account) Deposit(amount float64, db *pg.DB) error {
 	if amount < 0 {
 		return errors.New("You can only deposit positive quantities")
 	}
 	a.Deposited += amount
-	a.Available = a.Deposited - a.Withdrawn - a.Blocked
+	a.UpdateAvailableFunds()
 	_, err := db.Model(a).WherePK().Update()
 	if err != nil {
 		log.Error(err)
@@ -80,7 +85,36 @@ func (a *Account) Withdraw(amount float64, db *pg.DB) error {
 		return errors.New("You cannot withdraw more than you have available")
 	}
 	a.Withdrawn += amount
-	a.Available = a.Deposited - a.Withdrawn - a.Blocked
+	a.UpdateAvailableFunds()
+	_, err := db.Model(a).WherePK().Update()
+	if err != nil {
+		log.Error(err)
+	}
+	return err
+}
+
+func (a *Account) Reserve(amount float64, db *pg.DB) error {
+	if amount < 0 {
+		return errors.New("You can only reserve positive quantities")
+	}
+	if amount > a.Available {
+		return errors.New("You cannot reserve more than you have available")
+	}
+	a.Blocked += amount
+	a.UpdateAvailableFunds()
+	_, err := db.Model(a).WherePK().Update()
+	if err != nil {
+		log.Error(err)
+	}
+	return err
+}
+
+func (a *Account) Release(amount float64, db *pg.DB) error {
+	if amount < 0 {
+		return errors.New("You can only release positive quantities")
+	}
+	a.Blocked -= amount
+	a.UpdateAvailableFunds()
 	_, err := db.Model(a).WherePK().Update()
 	if err != nil {
 		log.Error(err)

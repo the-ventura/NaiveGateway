@@ -21,6 +21,7 @@ func SetLogLevel(logger *logrus.Logger, l string, def logrus.Level) {
 		logger.Warnf("Could not parse log level, setting to %v", def)
 		level = def
 	}
+	logger.SetReportCaller(true)
 	logger.SetLevel(level)
 	logger.Infof("Log level set to %s", logger.GetLevel().String())
 }

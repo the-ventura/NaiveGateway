@@ -62,7 +62,10 @@ func (api *API) start() {
 	r.HandleFunc("/v1/accounts/create", api.createAccount).Methods("GET")
 	r.HandleFunc("/v1/accounts/deposit", api.depositToAccount).Methods("POST")
 	r.HandleFunc("/v1/accounts/detail", api.accountDetails).Methods("POST")
-	r.HandleFunc("/v1/accounts/statement", api.health)
+	r.HandleFunc("/v1/accounts/statement", api.accountStatement).Methods("POST")
+	// Transactions
+	r.HandleFunc("/v1/transactions/create", api.createTransaction).Methods("POST")
+	r.HandleFunc("/v1/transactions/execute", api.executeTransaction).Methods("POST")
 
 	r.Use(loggingMiddleware)
 	log.Infof("API server listening on port %s", cfg.API.Port)

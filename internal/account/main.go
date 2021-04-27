@@ -17,7 +17,7 @@ func CreateNewAccount(db *pg.DB) (*Account, error) {
 func GetAccountByID(id string, db *pg.DB) (*Account, error) {
 	a := Account{}
 	a.UUID = id
-	err := db.Model(&a).Select()
+	err := db.Model(&a).Where("uuid = ?", id).Select()
 	if err != nil {
 		log.Error(err)
 	}
