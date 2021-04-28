@@ -1,0 +1,22 @@
+.NavBar ul{
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  padding-left: 20px;
+
+}
+
+.NavBar ul li{
+  margin: 10px;
+  list-style-type: none;
+}
+
+.NavBar ul li a{
+  color: black;
+  text-decoration: none;
+}
+
+.NavBar ul li a:hover{
+  color: black;
+  text-decoration: underline;
+}
