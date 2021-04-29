@@ -53,6 +53,12 @@ h3 {
   outline-style: none;
 }
 
+.input-notification {
+  padding: 5px 5px;
+  margin: 5px 5px;
+  font-size: 10pt;
+}
+
 button {
   border-radius: 5px;
   border-width: 0px;

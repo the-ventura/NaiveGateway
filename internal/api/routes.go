@@ -16,10 +16,14 @@ func (api *API) health(w http.ResponseWriter, req *http.Request) {
 type AccountRequestBody struct {
 	ID     string  `json:"account_id"`
 	Amount float64 `json:"amount,string"`
+	Name   string  `json:"account_name"`
 }
 
 func (api *API) createAccount(w http.ResponseWriter, req *http.Request) {
-	account, err := account.CreateNewAccount(api.db)
+	bodyInfo := AccountRequestBody{}
+	err := json.NewDecoder(req.Body).Decode(&bodyInfo)
+
+	account, err := account.CreateNewAccount(bodyInfo.Name, api.db)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 	}

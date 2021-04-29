@@ -8,8 +8,9 @@ import (
 
 var log = logger.Log
 
-func CreateNewAccount(db *pg.DB) (*Account, error) {
+func CreateNewAccount(name string, db *pg.DB) (*Account, error) {
 	account := New()
+	account.CardName = name
 	err := account.Create(db)
 	return &account, err
 }

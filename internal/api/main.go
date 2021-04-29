@@ -59,7 +59,7 @@ func (api *API) start() {
 	// Generic routes
 	r.HandleFunc("/health", api.health)
 	// Account routes
-	r.HandleFunc("/v1/accounts/create", api.createAccount).Methods("GET")
+	r.HandleFunc("/v1/accounts/create", api.createAccount).Methods("POST")
 	r.HandleFunc("/v1/accounts/deposit", api.depositToAccount).Methods("POST")
 	r.HandleFunc("/v1/accounts/detail", api.accountDetails).Methods("POST")
 	r.HandleFunc("/v1/accounts/statement", api.accountStatement).Methods("POST")
