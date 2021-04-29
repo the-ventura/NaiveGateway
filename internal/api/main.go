@@ -64,6 +64,7 @@ func (api *API) start() {
 	r.HandleFunc("/v1/accounts/detail", api.accountDetails).Methods("POST")
 	r.HandleFunc("/v1/accounts/statement", api.accountStatement).Methods("POST")
 	// Transactions
+	r.HandleFunc("/v1/transactions", api.getTransactions).Methods("GET")
 	r.HandleFunc("/v1/transactions/create", api.createTransaction).Methods("POST")
 	r.HandleFunc("/v1/transactions/execute", api.executeTransaction).Methods("POST")
 

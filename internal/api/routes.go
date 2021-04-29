@@ -134,3 +134,13 @@ func (api *API) executeTransaction(w http.ResponseWriter, req *http.Request) {
 	payload, _ := json.Marshal(t)
 	w.Write(payload)
 }
+
+func (api *API) getTransactions(w http.ResponseWriter, req *http.Request) {
+	transactions, err := transaction.GetAllTransactions(api.db)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	payload, _ := json.Marshal(transactions)
+	w.Write(payload)
+}

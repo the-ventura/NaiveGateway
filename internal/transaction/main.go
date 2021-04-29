@@ -18,6 +18,15 @@ func GetTransactionByID(id string, db *pg.DB) (*Transaction, error) {
 	return &t, err
 }
 
+func GetAllTransactions(db *pg.DB) ([]Transaction, error) {
+	var transactions []Transaction
+	err := db.Model(&transactions).Order("creation_time ASC").Select()
+	if err != nil {
+		log.Error(err)
+	}
+	return transactions, err
+}
+
 func ListInboundTransactionsForAccount(id string, db *pg.DB) ([]Transaction, error) {
 	var inboundTransactions []Transaction
 	err := db.Model(&inboundTransactions).Where("to_id = ?", id).Order("creation_time ASC").Select()
