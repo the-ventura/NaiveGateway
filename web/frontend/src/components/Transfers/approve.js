@@ -14,7 +14,7 @@ export const ApproveTransfers = () => {
           axios.post(`${process.env.REACT_APP_API_URL}/v1/transactions/execute`, JSON.stringify({
             transaction_id: values.transferId
           }, null, 2)
-          ).then((response) => {
+          ).then(() => {
             eventBus.dispatch('update_transfer_data', {})
           }, (error) => {
             console.log(error)

@@ -23,6 +23,11 @@ type APIConfig struct {
 	CorsOrigins List   `yaml:"allowed_origins" env:"GATEWAY_API_ALLOWED_ORIGINS" env-default:""`
 }
 
+// FrontendConfig holds the configuration of the frontend
+type FrontendConfig struct {
+	Port string `yaml:"port" env:"GATEWAY_FRONTEND_PORT" env-default:"3000"`
+}
+
 // DatabaseConfig is a representation of the database configuration
 type DatabaseConfig struct {
 	User     string `yaml:"user" env:"GATEWAY_DB_USER"`
@@ -36,6 +41,7 @@ type DatabaseConfig struct {
 type GWConfig struct {
 	LogLevel string         `yaml:"log_level" env:"GATEWAY_LOG_LEVEL" env-default:"info"`
 	API      APIConfig      `yaml:"api"`
+	Frontend FrontendConfig `yaml:"frontend"`
 	Database DatabaseConfig `yaml:"database"`
 }
 

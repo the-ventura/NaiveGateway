@@ -2,6 +2,10 @@ log_level: debug # Log level to be used
 api:  # API configurations
   port: "5009"  # Standard port
   allowed_origins: [] # Cors origins when making frontend -> backend calls
+
+frontend:
+  port: "3000"
+
 database: # Database configurations
   db: gateway
   host: localhost
