@@ -8,6 +8,9 @@ import (
 
 var log = logger.Log
 
+// Generic transaction operations
+
+// GetTransactionByID gets a transaction object by its id
 func GetTransactionByID(id string, db *pg.DB) (*Transaction, error) {
 	t := Transaction{}
 	t.UUID = id
@@ -18,6 +21,7 @@ func GetTransactionByID(id string, db *pg.DB) (*Transaction, error) {
 	return &t, err
 }
 
+// GetAllTransactions fetches all transactions
 func GetAllTransactions(db *pg.DB) ([]Transaction, error) {
 	var transactions []Transaction
 	err := db.Model(&transactions).Order("creation_time ASC").Select()
@@ -27,6 +31,7 @@ func GetAllTransactions(db *pg.DB) ([]Transaction, error) {
 	return transactions, err
 }
 
+// ListInboundTransactionsForAccount gets all inbound transactions for a given account
 func ListInboundTransactionsForAccount(id string, db *pg.DB) ([]Transaction, error) {
 	var inboundTransactions []Transaction
 	err := db.Model(&inboundTransactions).Where("to_id = ?", id).Order("creation_time ASC").Select()
@@ -36,6 +41,7 @@ func ListInboundTransactionsForAccount(id string, db *pg.DB) ([]Transaction, err
 	return inboundTransactions, err
 }
 
+// ListOutboundTransactionsForAccount gets all outbound transactions for a given account
 func ListOutboundTransactionsForAccount(id string, db *pg.DB) ([]Transaction, error) {
 	var outboundTransactions []Transaction
 	err := db.Model(&outboundTransactions).Where("from_id = ?", id).Order("creation_time ASC").Select()

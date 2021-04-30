@@ -9,6 +9,7 @@ import (
 	"github.com/google/uuid"
 )
 
+// Transaction represents a transfer of funds between two entities
 type Transaction struct {
 	ID           string    `json:"id"`
 	FromID       string    `json:"from_id"`
@@ -21,11 +22,13 @@ type Transaction struct {
 	UUID         string    `json:"uuid" pg:",pk"`
 }
 
+// TransactionOptions is an optional data structure
 type TransactionOptions struct {
 	Description string
 	Currency    string
 }
 
+// NewOpts is the TransactionOptions constructor
 func NewOpts() TransactionOptions {
 	return TransactionOptions{
 		Description: "",
@@ -33,6 +36,7 @@ func NewOpts() TransactionOptions {
 	}
 }
 
+// New creates a new transaction with sane defaults
 func New(from, to string, amount float64, opts TransactionOptions) Transaction {
 	return Transaction{
 		FromID:       from,
@@ -46,6 +50,7 @@ func New(from, to string, amount float64, opts TransactionOptions) Transaction {
 	}
 }
 
+// Stage places a transaction in the ledger
 func (t *Transaction) Stage(db *pg.DB) error {
 	// Ensure the sender exists
 	sender, err := account.GetAccountByID(t.FromID, db)
@@ -53,12 +58,14 @@ func (t *Transaction) Stage(db *pg.DB) error {
 		log.Error(err)
 		return err
 	}
+	// Block funds
 	err = sender.Reserve(t.Amount, db)
 	if err != nil {
 		log.Error(err)
 		t.Delete(db)
 		return err
 	}
+	// Create the transaction
 	_, err = db.Model(t).Insert()
 	if err != nil {
 		log.Error(err)
@@ -66,6 +73,7 @@ func (t *Transaction) Stage(db *pg.DB) error {
 	return err
 }
 
+// Delete cancels a transaction
 func (t *Transaction) Delete(db *pg.DB) error {
 	t.Status = "canceled"
 	_, err := db.Model(t).WherePK().Update()
@@ -75,6 +83,7 @@ func (t *Transaction) Delete(db *pg.DB) error {
 	return nil
 }
 
+// Execute takes a transaction from the ledger and moves the listed funds
 func (t *Transaction) Execute(db *pg.DB) error {
 	// We need to ensure that both the sender and recipient exist
 	sender, err1 := account.GetAccountByID(t.FromID, db)
@@ -83,24 +92,27 @@ func (t *Transaction) Execute(db *pg.DB) error {
 		t.Delete(db)
 		return errors.New("Failed to validate transaction actors")
 	}
-	// Manipulate funds
+	// Withdraw funds from the sender
 	err := sender.Withdraw(t.Amount, db)
 	if err != nil {
 		t.Delete(db)
 		return errors.New("Could not withdraw funds")
 	}
+	// Release blocked funds
 	err = sender.Release(t.Amount, db)
 	if err != nil {
 		t.Delete(db)
 		sender.Deposit(t.Amount, db) // Rollback withdrawn funds
 		return errors.New("Could not release funds")
 	}
+	// Send funds to the target
 	err = recipient.Deposit(t.Amount, db)
 	if err != nil {
 		t.Delete(db)
 		sender.Deposit(t.Amount, db) // Rollback withdrawn funds
 		return errors.New("Could not deposit funds")
 	}
+	// Mark transaction as complete
 	t.Status = "completed"
 	_, err = db.Model(t).WherePK().Update()
 	if err != nil {

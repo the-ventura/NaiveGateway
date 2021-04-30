@@ -9,6 +9,7 @@ services:
     volumes:
       - "./configs/config.yaml:/root/configs/config.yaml"
     environment:
+      GATEWAY_LOG_LEVEL: info
       GATEWAY_API_PORT: "8765"
       GATEWAY_DB_DB_NAME: gateway
       GATEWAY_DB_HOST: database
@@ -32,6 +33,7 @@ services:
     environment:
       API_URL: "http://localhost:8765"
       GATEWAY_FRONTEND_PORT: "3000"
+      GATEWAY_LOG_LEVEL: info
     ports:
       - "3000:3000"
     command: ["./naivegateway", "frontend"]

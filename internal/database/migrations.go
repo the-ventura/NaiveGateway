@@ -158,7 +158,6 @@ func (nf ByNumericalFilename) Len() int      { return len(nf) }
 func (nf ByNumericalFilename) Swap(i, j int) { nf[i], nf[j] = nf[j], nf[i] }
 func (nf ByNumericalFilename) Less(i, j int) bool {
 
-	// Use path names
 	pathA := nf[i].Name()
 	pathB := nf[j].Name()
 
@@ -172,7 +171,6 @@ func (nf ByNumericalFilename) Less(i, j int) bool {
 		return pathA < pathB
 	}
 
-	// Which integer is smaller?
 	return a < b
 }
 

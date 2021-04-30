@@ -41,6 +41,7 @@ func New() API {
 	}
 }
 
+// Log requests
 func loggingMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		log.Trace(r.RequestURI)
@@ -52,6 +53,7 @@ func (api *API) start() {
 	connectionString := fmt.Sprintf(":%s", cfg.API.Port)
 	r := mux.NewRouter()
 
+	// Configure cors
 	headersOk := handlers.AllowedHeaders([]string{"Origin", "X-Requested-With", "Content-Type", "Accept", "Authorization"})
 	originsOk := handlers.AllowedOrigins(cfg.API.CorsOrigins)
 	methodsOk := handlers.AllowedMethods([]string{"GET", "HEAD", "POST", "PUT", "OPTIONS"})

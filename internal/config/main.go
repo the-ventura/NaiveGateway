@@ -54,8 +54,6 @@ func GetConfig() GWConfig {
 	}
 	if err := cleanenv.ReadConfig(configPath, &config); err != nil {
 		fmt.Println("WARNING: Could not read config file; Continuing with defaults")
-
-		// panic(fmt.Sprintf("Could not read config file: %s", err))
 	}
 	return config
 }

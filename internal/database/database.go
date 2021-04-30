@@ -7,6 +7,7 @@ import (
 	pg "github.com/go-pg/pg/v10"
 )
 
+// Log queries
 type dbLogger struct{}
 
 func (d dbLogger) BeforeQuery(c context.Context, q *pg.QueryEvent) (context.Context, error) {

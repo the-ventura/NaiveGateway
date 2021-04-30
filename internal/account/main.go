@@ -8,6 +8,9 @@ import (
 
 var log = logger.Log
 
+// Generic Account manipulation
+
+// CreateNewAccount creates a new account with the specified name
 func CreateNewAccount(name string, db *pg.DB) (*Account, error) {
 	account := New()
 	account.CardName = name
@@ -15,6 +18,7 @@ func CreateNewAccount(name string, db *pg.DB) (*Account, error) {
 	return &account, err
 }
 
+// GetAccountByID fetches an account object by a given ID
 func GetAccountByID(id string, db *pg.DB) (*Account, error) {
 	a := Account{}
 	a.UUID = id

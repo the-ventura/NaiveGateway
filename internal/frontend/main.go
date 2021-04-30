@@ -53,14 +53,25 @@ func (api *API) start() {
 	index := "web/frontend/build/index.html"
 	static := "web/frontend/build/static"
 	templateIndex(index)
+
+	// Health endpoint
+	r.HandleFunc("/health", health)
+	// Serve static files (css and js)
 	r.PathPrefix("/static").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir(static))))
+	// Serve spa (index.html)
 	r.PathPrefix("/").HandlerFunc(IndexHandler(index))
+
 	r.Use(loggingMiddleware)
 	log.Infof("API server listening on port %s", cfg.Frontend.Port)
 	err := http.ListenAndServe(connectionString, r)
 	if err != nil {
 		log.Fatal(err)
 	}
+}
+
+func health(w http.ResponseWriter, req *http.Request) {
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte("OK"))
 }
 
 func IndexHandler(entrypoint string) func(w http.ResponseWriter, r *http.Request) {

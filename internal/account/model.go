@@ -10,6 +10,7 @@ import (
 	"github.com/google/uuid"
 )
 
+// Account models the account structure
 type Account struct {
 	ID               int64     `json:"id"`
 	UUID             string    `json:"uuid" pg:",pk"`
@@ -27,8 +28,7 @@ type Account struct {
 	CreationTime     time.Time `json:"creation_time"`
 }
 
-// A very simple account with a lot of assumptions.
-// We could expand on this a bit but for now this model will do
+// New creates a new account with sane defaults
 func New() Account {
 	var identifier = rand.Intn(4666778181156223-4666000000000000) + 4666000000000000
 	return Account{
@@ -48,10 +48,12 @@ func New() Account {
 	}
 }
 
+// String returns a printable version of an Account
 func (a Account) String() string {
 	return fmt.Sprintf("Account<%s %f %s %s>", a.UUID, a.Available, a.Currency, a.CardType)
 }
 
+// Create registers this account in the database
 func (a *Account) Create(db *pg.DB) error {
 	_, err := db.Model(a).Insert()
 	if err != nil {
@@ -60,10 +62,12 @@ func (a *Account) Create(db *pg.DB) error {
 	return err
 }
 
+// UpdateAvailableFunds calculates the available funds
 func (a *Account) UpdateAvailableFunds() {
 	a.Available = a.Deposited - a.Withdrawn - a.Blocked
 }
 
+// Deposit increments the deposited funds in this account - it can be used as a top up or to express incoming transactions
 func (a *Account) Deposit(amount float64, db *pg.DB) error {
 	if amount < 0 {
 		return errors.New("You can only deposit positive quantities")
@@ -77,6 +81,7 @@ func (a *Account) Deposit(amount float64, db *pg.DB) error {
 	return err
 }
 
+// Withdraw increments the withdrawn funds in this account - used for outbound transactions
 func (a *Account) Withdraw(amount float64, db *pg.DB) error {
 	if amount < 0 {
 		return errors.New("You can only withdraw positive quantities")
@@ -93,6 +98,7 @@ func (a *Account) Withdraw(amount float64, db *pg.DB) error {
 	return err
 }
 
+// Reserve blocks funds in this account
 func (a *Account) Reserve(amount float64, db *pg.DB) error {
 	if amount < 0 {
 		return errors.New("You can only reserve positive quantities")
@@ -109,6 +115,7 @@ func (a *Account) Reserve(amount float64, db *pg.DB) error {
 	return err
 }
 
+// Release unblocks funds in this account
 func (a *Account) Release(amount float64, db *pg.DB) error {
 	if amount < 0 {
 		return errors.New("You can only release positive quantities")
