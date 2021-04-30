@@ -1,5 +1,5 @@
 import React from 'react'
-import axios from 'axios'
+import ax from '../../requests'
 import { Formik, Form, Field } from 'formik'
 
 export class NewAccount extends React.Component {
@@ -11,7 +11,7 @@ export class NewAccount extends React.Component {
   }
 
   createAccount (name) {
-    axios.post(`${process.env.REACT_APP_API_URL}/v1/accounts/create`, JSON.stringify({
+    ax.post('/v1/accounts/create', JSON.stringify({
       account_name: name
     }, null, 2)
     ).then((res) => {

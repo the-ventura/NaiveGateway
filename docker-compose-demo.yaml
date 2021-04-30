@@ -1,0 +1,52 @@
+version: "3.9"
+services:
+  api:
+    build: .
+    image: naivegateway:latest
+    depends_on:
+      database:
+        condition: service_healthy
+    volumes:
+      - "./configs/config.yaml:/root/configs/config.yaml"
+    environment:
+      GATEWAY_API_PORT: "8765"
+      GATEWAY_DB_DB_NAME: gateway
+      GATEWAY_DB_HOST: database
+      GATEWAY_DB_PASSWORD: fananas
+      GATEWAY_DB_PORT: "5432"
+      GATEWAY_DB_USER: gw
+    ports:
+      - "8765:8765"
+    command:
+      - "sh"
+      - "-c"
+      - "./naivegateway database migrate -t `cat MIGRATION_VERSION` && ./naivegateway api"
+
+  frontend:
+    build: .
+    image: naivegateway:latest
+    depends_on:
+      - api
+    volumes:
+      - "./configs/config.yaml:/root/configs/config.yaml"
+    environment:
+      API_URL: "http://localhost:8765"
+      GATEWAY_FRONTEND_PORT: "3000"
+    ports:
+      - "3000:3000"
+    command: ["./naivegateway", "frontend"]
+
+  database:
+    image: postgres:13.1-alpine
+    user: postgres
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U gw -d gateway"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    environment:
+      POSTGRES_USER: gw
+      POSTGRES_PASSWORD: fananas
+      POSTGRES_DB: gateway

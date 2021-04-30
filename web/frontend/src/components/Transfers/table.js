@@ -1,5 +1,5 @@
 import React from 'react'
-import axios from 'axios'
+import ax from '../../requests'
 import { eventBus } from '../eventBus'
 
 export const Transfers = () => {
@@ -41,9 +41,9 @@ class TableContents extends React.Component {
   }
 
   getData () {
-    axios.get(`${process.env.REACT_APP_API_URL}/v1/transactions`, {})
+    ax.get('/v1/transactions', {})
       .then((res) => {
-        this.setState({ transfers: res.data })
+        this.setState({ transfers: res.data || [] })
       })
   }
 

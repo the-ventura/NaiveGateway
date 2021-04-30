@@ -91,6 +91,7 @@ func runMigration(db *pg.DB, directory, fileName string) error {
 func migrate(files []os.FileInfo, target int, directory string) {
 	var lastFileName string
 	db := NewConnection()
+	createMigrationInfoTable(db)
 	lastMigrationInfo := getLastMigrationInfo(db)
 	offset := int(lastMigrationInfo.Count)
 	fileOrder, _, target := fileExecutionOrder(files, offset, target)
@@ -112,6 +113,7 @@ func createMigrationInfoTable(db *pg.DB) {
 	if err != nil {
 		log.Error(err)
 	}
+	updateMigrationInfo(db, -1, "Empty")
 }
 
 func updateMigrationInfo(db *pg.DB, count int64, name string) {

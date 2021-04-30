@@ -51,14 +51,24 @@ func (api *API) start() {
 	r := mux.NewRouter()
 
 	index := "web/frontend/build/index.html"
+	static := "web/frontend/build/static"
 	templateIndex(index)
-	r.PathPrefix("/").Handler(http.FileServer(http.Dir("web/frontend/build")))
+	r.PathPrefix("/static").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir(static))))
+	r.PathPrefix("/").HandlerFunc(IndexHandler(index))
 	r.Use(loggingMiddleware)
 	log.Infof("API server listening on port %s", cfg.Frontend.Port)
 	err := http.ListenAndServe(connectionString, r)
 	if err != nil {
-		log.Error(err)
+		log.Fatal(err)
 	}
+}
+
+func IndexHandler(entrypoint string) func(w http.ResponseWriter, r *http.Request) {
+	fn := func(w http.ResponseWriter, r *http.Request) {
+		http.ServeFile(w, r, entrypoint)
+	}
+
+	return http.HandlerFunc(fn)
 }
 
 func envToMap() (map[string]string, error) {
@@ -74,7 +84,7 @@ func envToMap() (map[string]string, error) {
 }
 
 func templateIndex(indexPath string) {
-	backup := fmt.Sprintf("%s.bak", indexPath)
+	backup := fmt.Sprintf("%s.tpl", indexPath)
 	if _, err := os.Stat(backup); os.IsNotExist(err) {
 		copy(indexPath, backup)
 	}

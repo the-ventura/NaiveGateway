@@ -1,4 +1,4 @@
-import axios from 'axios'
+import ax from '../../requests'
 import { Formik, Form, Field } from 'formik'
 import { eventBus } from '../eventBus'
 
@@ -11,7 +11,7 @@ export const ApproveTransfers = () => {
         }}
         onSubmit={async (values) => {
           await new Promise((resolve) => setTimeout(resolve, 500))
-          axios.post(`${process.env.REACT_APP_API_URL}/v1/transactions/execute`, JSON.stringify({
+          ax.post('/v1/transactions/execute', JSON.stringify({
             transaction_id: values.transferId
           }, null, 2)
           ).then(() => {

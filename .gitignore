@@ -14,4 +14,4 @@ bin/*
 
 # Specific configurations which may expose credentials
 configs/config.yaml
-docker-compose.yaml
+docker-compose-dev.yaml

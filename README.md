@@ -2,10 +2,23 @@
 A naive implementation of a payment gateway. It contains no security or authorization, every user can deposit and withdraw from every account.
 
 ## Running
-### Locally
-You will need a postgres instance running, you can launch one directly in your machine using the included docker-compose file by running
+
+### The easy way (recommended)
+There is a docker compose file already configured which will build and run everything you need.
+First build everything with
 ```
-docker-compose up
+docker compose build -f docker-compose-demo.yaml
+```
+Then run the stack
+```
+docker compose up -f docker-compose-demo.yaml
+```
+Visit localhost:3000 in your machine and you should see the landing page.
+
+### Locally
+You will need a postgres instance running, you can launch one directly in your machine using the included docker-compose-dev.yaml file by running
+```
+docker compose up -f docker-compose-dev.yaml
 ```
 You may want to copy the `docker-compose.yaml.example` file and drop the example extention and customize the file.
 
@@ -45,6 +58,7 @@ Check `configs/config.yaml.example` for the standard configuration file.
 ### Environment Variables
 | Name                        | Default             | Description                                                          |
 |-----------------------------|---------------------|----------------------------------------------------------------------|
+| API_URL                     |                     | The api service's public url                                         |
 | GATEWAY_API_ALLOWED_ORIGINS |                     | Cors domains, comma separated. e.g: "app.domain.com, api.domain.com" |
 | GATEWAY_API_PORT            | 5009                | Default port to listen on                                            |
 | GATEWAY_CONFIG_PATH         | configs/config.yaml | Default path for the configuration file                              |
@@ -53,4 +67,5 @@ Check `configs/config.yaml.example` for the standard configuration file.
 | GATEWAY_DB_PASSWORD         |                     | Database password                                                    |
 | GATEWAY_DB_PORT             | 5432                | Database port                                                        |
 | GATEWAY_DB_USER             |                     | Database user                                                        |
+| GATEWAY_FRONTEND_PORT       | 3000                | Default port for the frontend service                                |
 | GATEWAY_LOG_LEVEL           | info                | Log level                                                            |

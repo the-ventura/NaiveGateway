@@ -1,5 +1,5 @@
 import React from 'react'
-import axios from 'axios'
+import ax from '../../requests'
 import { Formik, Form, Field } from 'formik'
 
 export class TopUp extends React.Component {
@@ -12,7 +12,7 @@ export class TopUp extends React.Component {
   }
 
   depositToAccount (id, amount) {
-    axios.post(`${process.env.REACT_APP_API_URL}/v1/accounts/deposit`, JSON.stringify({
+    ax.post('/v1/accounts/deposit', JSON.stringify({
       account_id: id,
       amount: amount
     }, null, 2)

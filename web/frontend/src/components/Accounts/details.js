@@ -1,5 +1,5 @@
 import React from 'react'
-import axios from 'axios'
+import ax from '../../requests'
 import { Formik, Form, Field } from 'formik'
 
 export class AccountDetails extends React.Component {
@@ -24,7 +24,7 @@ export class AccountDetails extends React.Component {
   }
 
   getAccountDetails (id) {
-    axios.post(`${process.env.REACT_APP_API_URL}/v1/accounts/detail`, JSON.stringify({
+    ax.post('/v1/accounts/detail', JSON.stringify({
       account_id: id
     }, null, 2)
     ).then((res) => {
@@ -42,7 +42,7 @@ export class AccountDetails extends React.Component {
     }, (error) => {
       console.log(error)
     })
-    axios.post(`${process.env.REACT_APP_API_URL}/v1/accounts/statement`, JSON.stringify({
+    ax.post('/v1/accounts/statement', JSON.stringify({
       account_id: id
     }, null, 2)
     ).then((res) => {
