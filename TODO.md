@@ -1,3 +1,3 @@
 # Things left to do
-* Terraform config
+* tests
 * CI/CD pipeline
