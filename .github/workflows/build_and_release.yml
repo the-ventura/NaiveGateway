@@ -1,4 +1,4 @@
-# This is a basic workflow to help you get started with Actions
+# This workflow requires AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY to be set in the repo's security settings
 
 name: Build and release
 
