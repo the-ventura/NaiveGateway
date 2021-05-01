@@ -17,3 +17,26 @@ provider "aws" {
 resource "aws_ecr_repository" "naive_gateway_repo" {
   name = "joaoventura/naive-gateway"
 }
+
+resource "aws_ecr_lifecycle_policy" "naive_gateway_repo" {
+  repository = aws_ecr_repository.naive_gateway_repo.name
+
+  policy = <<EOF
+{
+    "rules": [
+        {
+            "rulePriority": 1,
+            "description": "Only have a version history of 5 images",
+            "selection": {
+                "tagStatus": "any",
+                "countType": "imageCountMoreThan",
+                "countNumber": 5
+            },
+            "action": {
+                "type": "expire"
+            }
+        }
+    ]
+}
+EOF
+}
