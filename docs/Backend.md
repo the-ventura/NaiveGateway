@@ -171,19 +171,17 @@ Method: GET
 Response:
 
 ```json
-{
-  [
-    "id": "",
-    "from_id": "",
-    "to_id": "",
-    "amount": "",
-    "status": "",
-    "description": "",
-    "currency": "",
-    "creation_time": "",
-    "uuid": ""
-  ]
-}
+[
+  "id": "",
+  "from_id": "",
+  "to_id": "",
+  "amount": "",
+  "status": "",
+  "description": "",
+  "currency": "",
+  "creation_time": "",
+  "uuid": ""
+]
 ```
 
 ### /v1/transactions/create
