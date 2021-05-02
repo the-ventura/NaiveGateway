@@ -21,7 +21,7 @@ services:
     command:
       - "sh"
       - "-c"
-      - "./naivegateway database migrate -t `cat MIGRATION_VERSION` && ./naivegateway api"
+      - "./naivegateway database migrate -t `sed 's/\r$$//' MIGRATION_VERSION` && ./naivegateway api"
 
   frontend:
     build: .

@@ -1,61 +1,78 @@
 # NaiveGateway
-A naive implementation of a payment gateway. It contains no security or authorization, every user can deposit and withdraw from every account.
+
+A naive implementation of a payment gateway. Where transactions can be created to move funds between accounts. The user takes the role of administrator of the system and can create accounts and transfers at will.
 
 ## Running
 
 ### The easy way (recommended)
+
 There is a docker compose file already configured which will build and run everything you need.
 First build everything with
-```
+
+```bash
 docker compose build -f docker-compose-demo.yaml
 ```
-Then run the stack
+
+Make sure to create a `configs/config.yaml` file which can be a copy of the `configs/config.yaml.example`. Make sure to set the cors allowed domains. If running locally you can set it to:
+
+```yaml
+  allowed_origins:
+    - "*"
 ```
+
+Keep in mind that this is not safe in a production environment!
+
+Finally run the stack:
+
+```bash
 docker compose up -f docker-compose-demo.yaml
 ```
+
 Visit localhost:3000 in your machine and you should see the landing page.
 
 ### Locally
+
 You will need a postgres instance running, you can launch one directly in your machine using the included docker-compose-dev.yaml file by running
-```
+
+```bash
 docker compose up -f docker-compose-dev.yaml
 ```
+
 You may want to copy the `docker-compose.yaml.example` file and drop the example extention and customize the file.
 
 Next you should compile the gateway if you have not downloaded the binary from the releases page by running
-```
+
+```bash
 make
 ```
+
 This will create a file called `naivegateway` inside the `./bin` folder
 
 Run database migrations with
-```
+
+```bash
 ./bin/naivegateway database migrate -t `cat MIGRATION_VERSION`
 ```
 
 Run the api server with
-```
+
+```bash
 ./bin/naivegateway api
 ```
 
-### Using docker
-You will need a postgres instance running in the same network as the docker container. You can build the docker container from the dockerfile included in this repo by running
-```
-docker build -t naivegateway .
-```
+Run the frontend server with
 
-and then run it with
+```bash
+./bin/naivegateway frontend
 ```
-docker run naivegateway
-```
-You may want to set a volume with the configurations or use environment variables. More on that down below.
-You may also want run the migrations as in the above step
 
 ## Configuring
+
 This project comes with two complimentary methods of configuration; A config file and environment variables
 Check `configs/config.yaml.example` for the standard configuration file.
 
 ### Environment Variables
+
 | Name                        | Default             | Description                                                          |
 |-----------------------------|---------------------|----------------------------------------------------------------------|
 | API_URL                     |                     | The api service's public url                                         |

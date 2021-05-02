@@ -52,8 +52,15 @@ func GetConfig() GWConfig {
 	if configPath == "" {
 		configPath = "configs/config.yaml"
 	}
-	if err := cleanenv.ReadConfig(configPath, &config); err != nil {
+	// Create config file if it doesnt exist
+	if _, err := os.Stat(configPath); os.IsNotExist(err) {
+		f, _ := os.Create(configPath)
+		f.Close()
 		fmt.Println("WARNING: Could not read config file; Continuing with defaults")
+	}
+	if err := cleanenv.ReadConfig(configPath, &config); err != nil {
+		msg := fmt.Sprintf("Could not load configurations - %s", err)
+		panic(msg)
 	}
 	return config
 }
