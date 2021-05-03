@@ -148,7 +148,8 @@ Expected Payload:
   "account_id": "id",
 }
 
-```json
+```
+
 Response:
 
 ```json
@@ -156,8 +157,6 @@ Response:
   "account_id": "",
   "inbound_transactions": [],
   "outbound_transactions": []
-}
-
 }
 ```
 
